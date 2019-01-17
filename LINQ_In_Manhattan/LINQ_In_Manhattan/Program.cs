@@ -47,19 +47,53 @@ namespace LINQ_In_Manhattan
             using (StreamReader reader = File.OpenText(@"../../../../../data.json"))
             {
                 JObject json = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-                List<string> allNeighborhoods = new List<string>();
-                foreach (JToken feature in json["features"])
+                //at this point the JObject can probably be operated on, but let's force it into our classes instead
+                string jsonType = (string)json["type"];
+                List<Feature> features = new List<Feature>();
+                foreach(JToken feature in json["features"])
                 {
-                    string neighborhood = feature["properties"]["neighborhood"].ToString();
-                    //Console.WriteLine(neighborhood);
-                    allNeighborhoods.Add(neighborhood);
-                    //allNeighborhoods.Add(feature["properties"]["neighborhood"]);
+                    //type
+                    string featType = (string)feature["type"];
+                    //geometry
+                    string geoType = (string)feature["geometry"]["type"];
+                    //coordinates
+                    double longitude = (double)feature["geometry"]["coordinates"][0];
+                    double latitude = (double)feature["geometry"]["coordinates"][1];
+                    Coords coordinates = new Coords(longitude, latitude);
+                    Geometry geometry = new Geometry(geoType, coordinates);
+
+                    //properties
+                    string zip = (string)feature["properties"]["zip"];
+                    string city = (string)feature["properties"]["city"];
+                    string state = (string)feature["properties"]["state"];
+                    string address = (string)feature["properties"]["address"];
+                    string borough = (string)feature["properties"]["borough"];
+                    string neighborhood = (string)feature["properties"]["neighborhood"];
+                    string country = (string)feature["properties"]["country"];
+                    Properties property = new Properties(zip, city, state, address, borough, neighborhood, country);
+                    Feature feat = new Feature(featType, geometry, property);
+                    features.Add(feat);
+                    Console.WriteLine(property.Neighborhood);
+                    //feature["properties"];
+                    //Console.WriteLine(feature);
                 }
-                foreach (string neighborhood in allNeighborhoods)
-                {
-                    Console.Write(neighborhood + "; ");
-                }
-                Console.WriteLine();
+                SerializedJSON JSON = new SerializedJSON(jsonType, features);
+                Console.WriteLine(JSON.Features[0].Property.Neighborhood);
+
+                //List<string> allNeighborhoods = new List<string>();
+                //foreach (JToken feature in json["features"])
+                //{
+                //    string neighborhood = feature["properties"]["neighborhood"].ToString();
+                //    //Console.WriteLine(neighborhood);
+                //    allNeighborhoods.Add(neighborhood);
+                //    //allNeighborhoods.Add(feature["properties"]["neighborhood"]);
+                //}
+                //foreach (string neighborhood in allNeighborhoods)
+                //{
+                //    Console.Write(neighborhood + "; ");
+                //}
+                //Console.WriteLine();
+
                 //Console.WriteLine(allNeighborhoods);
                 //JToken oChildren = o.Children();
                 //Console.WriteLine(o.Children());

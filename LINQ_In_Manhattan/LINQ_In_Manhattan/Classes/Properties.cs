@@ -13,5 +13,16 @@ namespace LINQ_In_Manhattan.Classes
         public string Borough { get; set; }
         public string Neighborhood { get; set; }
         public string Country { get; set; }
+
+        public Properties(string zip, string city, string state, string address, string borough, string neighborhood, string country)
+        {
+            Zip = zip;
+            City = city;
+            State = state;
+            Address = address;
+            Borough = borough;
+            Neighborhood = neighborhood;
+            Country = country;
+        }
     }
 }
