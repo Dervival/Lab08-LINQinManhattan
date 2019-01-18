@@ -55,13 +55,72 @@ namespace LINQ_In_Manhattan
             //Console.WriteLine(JSON.Features[0].Property.Neighborhood);
             List<string> filterNeighborhoods = new List<string>();
             filterNeighborhoods = AnswerLinqQuestionOne(allNeighborhoods);
-            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the first query.");
+            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the first query.\n");
+            filterNeighborhoods = AnswerLinqQuestionTwo(filterNeighborhoods);
+            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the second query.\n");
+            filterNeighborhoods = AnswerLinqQuestionThree(filterNeighborhoods);
+            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
+            List<string> filterAllAtOnceNeighborhoods = new List<string>();
+            filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allNeighborhoods);
+            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
         }
 
         static List<string> AnswerLinqQuestionOne(List<string> data)
         {
-            Console.WriteLine("What all of the neighborhoods in this data list, including duplicates and null values?");
+            Console.WriteLine("What are all of the neighborhoods in this data list, including duplicates and null values?");
             IEnumerable<string> results = from neighborhood in data
+                                          select neighborhood;
+
+            List<string> filteredNeighborhoods = new List<string>();
+            foreach (string place in results)
+            {
+                Console.Write(place + "; ");
+                filteredNeighborhoods.Add(place);
+            }
+            Console.WriteLine("\n");
+            return filteredNeighborhoods;
+        }
+
+        static List<string> AnswerLinqQuestionTwo(List<string> data)
+        {
+            Console.WriteLine("What are all of the neighborhoods in this data list, including duplicates?");
+            IEnumerable<string> results = from neighborhood in data
+                                          where neighborhood != ""
+                                          select neighborhood;
+
+            List<string> filteredNeighborhoods = new List<string>();
+            foreach (string place in results)
+            {
+                Console.Write(place + "; ");
+                filteredNeighborhoods.Add(place);
+            }
+            Console.WriteLine("\n");
+            return filteredNeighborhoods;
+        }
+
+        static List<string> AnswerLinqQuestionThree(List<string> data)
+        {
+            Console.WriteLine("What are all of the neighborhoods in this data list?");
+            IEnumerable<string> dataDistinct = data.Distinct();
+            IEnumerable<string> results = from neighborhood in dataDistinct
+                                          select neighborhood;
+
+            List<string> filteredNeighborhoods = new List<string>();
+            foreach (string place in results)
+            {
+                Console.Write(place + "; ");
+                filteredNeighborhoods.Add(place);
+            }
+            Console.WriteLine("\n");
+            return filteredNeighborhoods;
+        }
+
+        static List<string> AnswerLinqQuestionFour(List<string> data)
+        {
+            Console.WriteLine("What are all of the neighborhoods in this data list? Only use one query to do this.");
+            IEnumerable<string> dataDistinct = data.Distinct();
+            IEnumerable<string> results = from neighborhood in dataDistinct
+                                          where neighborhood != ""
                                           select neighborhood;
 
             List<string> filteredNeighborhoods = new List<string>();
