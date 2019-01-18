@@ -47,14 +47,17 @@ namespace LINQ_In_Manhattan
             }
             SerializedJSON JSON = new SerializedJSON(jsonType, features);
             List<string> allNeighborhoods = new List<string>();
+            List<Properties> allProperties = new List<Properties>(); 
             foreach(Feature feature in JSON)
             {
                 allNeighborhoods.Add(feature.Property.Neighborhood);
+                allProperties.Add(feature.Property);
                 //Console.Write(feature.Property.Neighborhood + "; ");
             }
             //Console.WriteLine(JSON.Features[0].Property.Neighborhood);
             List<string> filterNeighborhoods = new List<string>();
-            filterNeighborhoods = AnswerLinqQuestionOne(allNeighborhoods);
+            //filterNeighborhoods = AnswerLinqQuestionOne(allNeighborhoods);
+            filterNeighborhoods = AnswerLinqQuestionOne(allProperties);
             Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the first query.\n");
             filterNeighborhoods = AnswerLinqQuestionTwo(filterNeighborhoods);
             Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the second query.\n");
@@ -63,6 +66,22 @@ namespace LINQ_In_Manhattan
             List<string> filterAllAtOnceNeighborhoods = new List<string>();
             filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allNeighborhoods);
             Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
+        }
+
+        static List<string> AnswerLinqQuestionOne(List<Properties> data)
+        {
+            Console.WriteLine("What are all of the neighborhoods in this data list, including duplicates and null values?");
+            var results = from property in data
+                          select property.Neighborhood;
+
+            List<string> filteredNeighborhoods = new List<string>();
+            foreach (string place in results)
+            {
+                Console.Write(place + "; ");
+                filteredNeighborhoods.Add(place);
+            }
+            Console.WriteLine("\n");
+            return filteredNeighborhoods;
         }
 
         static List<string> AnswerLinqQuestionOne(List<string> data)
