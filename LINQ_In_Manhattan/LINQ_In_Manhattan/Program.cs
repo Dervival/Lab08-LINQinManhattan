@@ -64,8 +64,8 @@ namespace LINQ_In_Manhattan
             filterNeighborhoods = AnswerLinqQuestionThree(filterNeighborhoods);
             Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
             List<string> filterAllAtOnceNeighborhoods = new List<string>();
-            filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allNeighborhoods);
-            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
+            filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allProperties);
+            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the fourth query.\n");
         }
 
         static List<string> AnswerLinqQuestionOne(List<Properties> data)
@@ -134,19 +134,25 @@ namespace LINQ_In_Manhattan
             return filteredNeighborhoods;
         }
 
-        static List<string> AnswerLinqQuestionFour(List<string> data)
+        static List<string> AnswerLinqQuestionFour(List<Properties> data)
         {
             Console.WriteLine("What are all of the neighborhoods in this data list? Only use one query to do this.");
-            IEnumerable<string> dataDistinct = data.Distinct();
-            IEnumerable<string> results = from neighborhood in dataDistinct
-                                          where neighborhood != ""
-                                          select neighborhood;
+            //IEnumerable<string> dataDistinct = data.Distinct();
+            IEnumerable<string> results = from properties in data
+                                          where properties.Neighborhood != ""
+                                          select properties.Neighborhood;
 
-            List<string> filteredNeighborhoods = new List<string>();
+            List<string> nonNullNeighborhoods = new List<string>();
             foreach (string place in results)
             {
-                Console.Write(place + "; ");
-                filteredNeighborhoods.Add(place);
+                nonNullNeighborhoods.Add(place);
+            }
+            IEnumerable<string> nonNullDistinctNeighborhoods = nonNullNeighborhoods.Distinct();
+            List<string> filteredNeighborhoods = new List<string>();
+            foreach ( string neighborhood in nonNullDistinctNeighborhoods)
+            {
+                Console.Write(neighborhood + "; ");
+                filteredNeighborhoods.Add(neighborhood);
             }
             Console.WriteLine("\n");
             return filteredNeighborhoods;
