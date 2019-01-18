@@ -17,30 +17,31 @@ namespace LINQ_In_Manhattan
             JObject Json = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(@"../../../../../data.json"));
             //at this point the JObject can probably be operated on, but let's force it into our classes instead
             SerializedJSON JSON = TranslateJObjectIntoSerializedJSON(Json);
-            //All we need for this lab is the list of properties from the object
-            List<Properties> allProperties = new List<Properties>(); 
-            foreach(Feature feature in JSON)
-            {
-                allProperties.Add(feature.Property);
-            }
-            //filterNeighborhoods used for questions 1-3; each question builds on the result of the previous
-            List<string> filterNeighborhoods = new List<string>();
-            filterNeighborhoods = AnswerLinqQuestionOne(allProperties);
-            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the first query.\n");
-            filterNeighborhoods = AnswerLinqQuestionTwo(filterNeighborhoods);
-            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the second query.\n");
-            filterNeighborhoods = AnswerLinqQuestionThree(filterNeighborhoods);
-            Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
+            ////All we need for this lab is the list of properties from the object
+            //List<Properties> allProperties = new List<Properties>(); 
+            //foreach(Feature feature in JSON)
+            //{
+            //    allProperties.Add(feature.Property);
+            //}
+            ////filterNeighborhoods used for questions 1-3; each question builds on the result of the previous
+            //List<string> filterNeighborhoods = new List<string>();
+            //filterNeighborhoods = AnswerLinqQuestionOne(allProperties);
+            //Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the first query.\n");
+            //filterNeighborhoods = AnswerLinqQuestionTwo(filterNeighborhoods);
+            //Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the second query.\n");
+            //filterNeighborhoods = AnswerLinqQuestionThree(filterNeighborhoods);
+            //Console.WriteLine(filterNeighborhoods.Count + " neighborhoods returned from the third query.\n");
 
-            //for the fourth question, do all actions with one query instead of three
-            List<string> filterAllAtOnceNeighborhoods = new List<string>();
-            filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allProperties);
-            Console.WriteLine(filterAllAtOnceNeighborhoods.Count + " neighborhoods returned from the fourth query.\n");
+            ////for the fourth question, do all actions with one query instead of three
+            //List<string> filterAllAtOnceNeighborhoods = new List<string>();
+            //filterAllAtOnceNeighborhoods = AnswerLinqQuestionFour(allProperties);
+            //Console.WriteLine(filterAllAtOnceNeighborhoods.Count + " neighborhoods returned from the fourth query.\n");
 
-            //for the fifth question, do all actions with a lambda expression
-            List<string> filterAllAtOnceNeighborhoodsViaLambda = new List<string>();
-            filterAllAtOnceNeighborhoodsViaLambda = AnswerLinqQuestionFive(allProperties);
-            Console.WriteLine(filterAllAtOnceNeighborhoodsViaLambda.Count + " neighborhoods returned from the fifth query.\n");
+            ////for the fifth question, do all actions with a lambda expression
+            //List<string> filterAllAtOnceNeighborhoodsViaLambda = new List<string>();
+            //filterAllAtOnceNeighborhoodsViaLambda = AnswerLinqQuestionFive(allProperties);
+            //Console.WriteLine(filterAllAtOnceNeighborhoodsViaLambda.Count + " neighborhoods returned from the fifth query.\n");
+            AskAllQuestions(JSON);
         }
         /// <summary>
         /// Translates the object created by the NewtonSoft.JSON library into the classes for this project.
@@ -163,7 +164,7 @@ namespace LINQ_In_Manhattan
             }
             IEnumerable<string> nonNullDistinctNeighborhoods = nonNullNeighborhoods.Distinct();
             List<string> filteredNeighborhoods = new List<string>();
-            foreach ( string neighborhood in nonNullDistinctNeighborhoods)
+            foreach (string neighborhood in nonNullDistinctNeighborhoods)
             {
                 Console.Write(neighborhood + "; ");
                 filteredNeighborhoods.Add(neighborhood);
@@ -173,7 +174,7 @@ namespace LINQ_In_Manhattan
         }
 
         /// <summary>
-        /// Answers the fourth question of the lab - listing out all non-null, non-duplicate neighborhoods via lambda expression
+        /// Answers the fifth question of the lab - listing out all non-null, non-duplicate neighborhoods via lambda expression
         /// </summary>
         /// <param name="data">List of properties representing a portion of the JSON file.</param>
         /// <returns>A list of strings of neighborhoods</returns>
@@ -197,6 +198,92 @@ namespace LINQ_In_Manhattan
             }
             Console.WriteLine("\n");
             return filteredNeighborhoods;
+        }
+
+        static void AskAllQuestions(SerializedJSON json)
+        {
+            //Pulling just the properties from the object
+            List<Properties> allProperties = new List<Properties>();
+            foreach (Feature feature in json)
+            {
+                allProperties.Add(feature.Property);
+            }
+            int neighborhoodCount = 0;
+
+            //Answering question 1
+            Console.WriteLine("What are all of the neighborhoods in this data list, including duplicates and null values?");
+            var queryOne = from property in allProperties
+                           select property.Neighborhood;
+
+            foreach (string place in queryOne)
+            {
+                Console.Write(place + "; ");
+                neighborhoodCount++;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine(neighborhoodCount + " neighborhoods returned from the first query.\n");
+
+            //Answering question 2
+            neighborhoodCount = 0;
+            Console.WriteLine("What are all of the neighborhoods in this data list, including duplicates?");
+            var queryTwo = from neighborhood in queryOne
+                           where neighborhood != ""
+                           select neighborhood;
+
+            foreach (string place in queryTwo)
+            {
+                Console.Write(place + "; ");
+                neighborhoodCount++;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine(neighborhoodCount + " neighborhoods returned from the second query.\n");
+
+            //Answering question 3
+            neighborhoodCount = 0;
+            Console.WriteLine("What are all of the neighborhoods in this data list?");
+            var queryThree = queryTwo.Distinct();
+
+            foreach (string place in queryThree)
+            {
+                Console.Write(place + "; ");
+                neighborhoodCount++;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine(neighborhoodCount + " neighborhoods returned from the third query.\n");
+
+            //Answering question 4
+            neighborhoodCount = 0;
+            Console.WriteLine("What are all of the neighborhoods in this data list? Only use one query to do this.");
+            var queryFour = from properties in allProperties
+                            where properties.Neighborhood != ""
+                           select properties.Neighborhood;
+
+            foreach (string place in queryFour.Distinct())
+            {
+                Console.Write(place + "; ");
+                neighborhoodCount++;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine(neighborhoodCount + " neighborhoods returned from the fourth query.\n");
+
+            //Answering question 5
+            neighborhoodCount = 0;
+            Console.WriteLine("What are all of the neighborhoods in this data list? Use a lambda function isntead of a query to do this.");
+            //Implementation of .Where lambda function from https://stackoverflow.com/questions/15253548/filtering-a-list-of-objects-with-a-certain-attribute
+            var queryFive = allProperties.Where(property => property.Neighborhood != "");
+
+            List<string> nonNullNeighborhoods = new List<string>();
+            foreach (Properties place in queryFive)
+            {
+                nonNullNeighborhoods.Add(place.Neighborhood);
+            }
+            foreach (string neighborhood in nonNullNeighborhoods.Distinct())
+            {
+                Console.Write(neighborhood + "; ");
+                neighborhoodCount++;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine(neighborhoodCount + " neighborhoods returned from the fifth query.\n");
         }
     }
 }
